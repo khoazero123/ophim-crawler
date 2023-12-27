@@ -2,14 +2,14 @@
 
 namespace Ophim\Crawler\OphimCrawler;
 
-use Ophim\Core\Models\Movie;
+use App\Models\Movie;
 use Illuminate\Support\Str;
-use Ophim\Core\Models\Actor;
-use Ophim\Core\Models\Category;
-use Ophim\Core\Models\Director;
-use Ophim\Core\Models\Episode;
-use Ophim\Core\Models\Region;
-use Ophim\Core\Models\Tag;
+use App\Models\Actor;
+use App\Models\Category;
+use App\Models\Director;
+use App\Models\Episode;
+use App\Models\Region;
+use App\Models\Tag;
 use Ophim\Crawler\OphimCrawler\Contracts\BaseCrawler;
 
 class Crawler extends BaseCrawler

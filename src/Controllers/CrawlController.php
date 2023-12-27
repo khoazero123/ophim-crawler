@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Ophim\Crawler\OphimCrawler\Crawler;
-use Ophim\Core\Models\Movie;
+use App\Models\Movie;
 
 /**
  * Class CrawlController
