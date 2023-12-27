@@ -43,11 +43,12 @@ class CrawlerScheduleCommand extends Command
      */
     public function handle()
     {
-        if(!$this->checkCrawlerScheduleEnable()) return 0;
-        $link = sprintf('%s/danh-sach/phim-moi-cap-nhat', Option::get('domain'));
+        // if(!$this->checkCrawlerScheduleEnable()) return 0;
+        $this->info('Start Crawler Schedule');
+        $link = sprintf('%s/danh-sach/phim-moi-cap-nhat', Option::get('domain', 'https://ophim1.com'));
         $data = collect();
         $page_from = Option::get('crawler_schedule_page_from', 1);
-        $page_to = Option::get('crawler_schedule_page_to', 2);
+        $page_to = Option::get('crawler_schedule_page_to', 5); // 1044
         $this->logger->notice(sprintf("Crawler Page (FROM: %d | TO: %d)",  $page_from, $page_to));
         for ($i = $page_from; $i <= $page_to; $i++) {
             if(!$this->checkCrawlerScheduleEnable()) {
@@ -71,7 +72,7 @@ class CrawlerScheduleCommand extends Command
                     $this->logger->notice(sprintf("Stop Crawler Movies (TOTAL: %d | CRAWED: %d | ERROR %d)", $count_movies, $key, $count_error));
                     return 0;
                 }
-                $link = sprintf('%s/phim/%s', Option::get('domain'), $movie['slug']);
+                $link = sprintf('%s/phim/%s', Option::get('domain', 'https://ophim1.com'), $movie['slug']);
                 $crawler = (new Crawler(
                     $link,
                     Option::get('crawler_schedule_fields', Option::getAllOptions()['crawler_schedule_fields']['default']),
@@ -91,6 +92,6 @@ class CrawlerScheduleCommand extends Command
 
     public function checkCrawlerScheduleEnable()
     {
-        return Option::get('crawler_schedule_enable', false);
+        return Option::get('crawler_schedule_enable', true);
     }
 }

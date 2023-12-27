@@ -59,7 +59,7 @@ class OphimCrawlerServiceProvider extends SP
         ]);
 
         $this->app->booted(function () {
-            $this->loadScheduler();
+            // $this->loadScheduler();
         });
 
         $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
