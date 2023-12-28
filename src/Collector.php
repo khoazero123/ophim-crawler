@@ -32,8 +32,8 @@ class Collector
             'content' => $info['content'],
             'type' =>  $this->getMovieType($info, $episodes),
             'status' => $info['status'],
-            'thumb_url' => $this->getThumbImage($info['slug'], $info['thumb_url']),
-            'poster_url' => $this->getPosterImage($info['slug'], $info['poster_url']),
+            'thumb_image' => $this->getThumbImage($info['slug'], $info['thumb_url']),
+            'poster_image' => $this->getPosterImage($info['slug'], $info['poster_url']),
             'is_copyright' => $info['is_copyright'],
             'trailer_url' => $info['trailer_url'] ?? "",
             'quality' => $info['quality'],
@@ -115,10 +115,10 @@ class Collector
             $tmp_path = $temporaryDirectory->path($path);
 
             $img->save($tmp_path);
-            $disk->put($path, $img);
+            $disk->put($path, fopen($tmp_path, 'r+'));
             $temporaryDirectory->delete();
 
-            return Storage::url($path);
+            return $path;
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return $url;
