@@ -5,6 +5,7 @@ namespace Ophim\Crawler\OphimCrawler;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Storage;
+use Spatie\TemporaryDirectory\TemporaryDirectory;
 
 class Collector
 {
@@ -12,7 +13,7 @@ class Collector
     protected $payload;
     protected $forceUpdate;
 
-    public function __construct(array $payload, array $fields, $forceUpdate)
+    public function __construct(array $payload, array $fields, $forceUpdate = false)
     {
         $this->fields = $fields;
         $this->payload = $payload;
@@ -78,18 +79,19 @@ class Collector
                 : (count(reset($episodes)['server_data'] ?? []) > 1 ? 'series' : 'single'));
     }
 
-    protected function getImage($slug, string $url, $shouldResize = false, $width = null, $height = null): string
+    protected function getImage($slug, string $url, $shouldResize = false, $width = null, $height = null, $disk = 'images'): string
     {
-        if (!Option::get('download_image', false) || empty($url)) {
+        if (!Option::get('download_image', true) || empty($url)) {
             return $url;
         }
         try {
             $url = strtok($url, '?');
             $filename = substr($url, strrpos($url, '/') + 1);
-            $path = "images/{$slug}/{$filename}";
+            $path = "{$slug}-{$filename}";
+            $disk = Storage::disk($disk);
 
-            if (Storage::disk('public')->exists($path) && $this->forceUpdate == false) {
-                return Storage::url($path);
+            if ($disk->exists($path) && $this->forceUpdate == false) {
+                return $path;
             }
 
             // Khởi tạo curl để tải về hình ảnh
@@ -109,9 +111,12 @@ class Collector
                 });
             }
 
-            Storage::disk('public')->put($path, null);
+            $temporaryDirectory = (new TemporaryDirectory())->create();
+            $tmp_path = $temporaryDirectory->path($path);
 
-            $img->save(storage_path("app/public/" . $path));
+            $img->save($tmp_path);
+            $disk->put($path, $img);
+            $temporaryDirectory->delete();
 
             return Storage::url($path);
         } catch (\Exception $e) {

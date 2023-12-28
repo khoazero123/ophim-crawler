@@ -59,7 +59,7 @@ class OphimCrawlerServiceProvider extends SP
         ]);
 
         $this->app->booted(function () {
-            // $this->loadScheduler();
+            $this->loadScheduler();
         });
 
         $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
@@ -68,6 +68,8 @@ class OphimCrawlerServiceProvider extends SP
 
     protected function loadScheduler()
     {
+        $crawler_schedule_enable = Option::get('crawler_schedule_enable', false);
+        if (!$crawler_schedule_enable) return;
         $schedule = $this->app->make(Schedule::class);
         $schedule->command('ophim:plugins:ophim-crawler:schedule')->cron(Option::get('crawler_schedule_cron_config', '*/10 * * * *'))->withoutOverlapping();
     }

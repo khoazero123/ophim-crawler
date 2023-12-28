@@ -32,7 +32,7 @@ class CrawlerScheduleCommand extends Command
      */
     public function __construct()
     {
-        $this->logger = Log::channel('ophim-crawler');
+        $this->logger = Log::channel('stdout');
         parent::__construct();
     }
 
@@ -43,7 +43,7 @@ class CrawlerScheduleCommand extends Command
      */
     public function handle()
     {
-        // if(!$this->checkCrawlerScheduleEnable()) return 0;
+        if(!$this->checkCrawlerScheduleEnable()) return 0;
         $this->info('Start Crawler Schedule');
         $link = sprintf('%s/danh-sach/phim-moi-cap-nhat', Option::get('domain', 'https://ophim1.com'));
         $data = collect();

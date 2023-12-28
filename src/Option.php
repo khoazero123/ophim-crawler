@@ -6,6 +6,7 @@ use Backpack\Settings\app\Models\Setting;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
 class Option
 {
@@ -46,14 +47,18 @@ class Option
 
     public static function getEntry()
     {
-        return Setting::firstOrCreate([
-            'key' => 'hacoidev/ophim-crawler.options',
-        ], [
-            'name' => 'Options',
-            'field' => json_encode(['name' => 'value', 'type', 'hidden']),
-            'group' => 'crawler',
-            'active' => false
-        ]);
+        $entry = Setting::where('key', 'hacoidev/ophim-crawler.options')->first();
+        if (!$entry) {
+            DB::table(config('backpack.settings.table_name'))->insertGetId([
+                'key' => 'hacoidev/ophim-crawler.options',
+                'name' => 'Options',
+                'field' => json_encode(['name' => 'value', 'type', 'hidden']),
+                'group' => 'crawler',
+                'active' => false,
+            ]);
+            $entry = Setting::where('key', 'hacoidev/ophim-crawler.options')->first();
+        }
+        return $entry;
     }
 
     public static function getAllOptions()

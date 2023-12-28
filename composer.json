@@ -3,7 +3,8 @@
     "description": "ophim crawler",
     "type": "package",
     "require": {
-        "intervention/image": "^2.7"
+        "intervention/image": "^2.7",
+        "spatie/temporary-directory": "^2.2"
     },
     "license": "MIT",
     "autoload": {
