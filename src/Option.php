@@ -16,7 +16,7 @@ class Option
             $entry = static::getEntry();
             $fields = array_column(static::getAllOptions(), 'value', 'name');
     
-            $options = array_merge($fields, json_decode($entry->value, true) ?? []);
+            $options = array_merge($fields, json_decode($entry->value ?: '', true) ?? []);
     
             return isset($options[$name]) ? $options[$name] : $default;
         } catch (QueryException $e) {
